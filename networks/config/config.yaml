@@ -1,0 +1,42 @@
+---
+project: im_invironment
+experiment_desc: 'exp_resnet34_classify_128'
+
+# Train: train_blocks has L0/L1/L2; Test: test has L0/L1/L2.
+# nonsky_dir: D:\workplace\dataset\Heshan_imgset\256x256\non_sky
+nonsky_dir: D:\workplace\dataset\Heshan_imgset\Heshan_imgset\am_pm_123\filtering
+# nonsky_dir: ../Heshan_imgset/big_imgs
+
+data_split:
+  split_date: 1107  # need to delete
+  val_ratio: 0.0    # train: 0.7
+  test_ratio: 0.2
+  split_back: False
+
+model:
+  g_name: alexnet
+  out_features: 3
+
+train:
+  continue_train: False  # Bug! Remember to set false if create a new training process
+  start_epoch: 30
+  model_path: data/exp_resnet34_classify_128_Aug/last_exp_resnet34_classify_128_Aug.h5
+  transform_first: RandomCrop
+
+val:
+  transform_first: CenterCrop  # When use Subset, val's transform is the same as train's
+
+test:
+  model_path: data/exp_alexnet_classify_128/best_exp_alexnet_classify_128.h5
+  # model_path: data/all_blocks/exp_resnet34_classify_128_Aug/best_exp_resnet34_classify_128_Aug.h5
+  crop_img_blocks: 40
+
+num_epochs: 100
+batches_per_epoch: 10000   # min(*, len(run_dataset))
+batch_size: 32             # big for PyCM error
+image_size: [128, 128]
+
+optimizer:
+  name: sgd
+  lr: 0.0001  # 0.0005 -> overfit?
+  momentum: 0.9
